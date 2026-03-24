@@ -16,6 +16,8 @@ public interface UserService {
 
     Optional<User> loadByUserName(String username);
 
+    Object findByUsername(String username);
+
     UserDto saveUser(UserCreateDto user);
     void deleteUser(Long id);
     UserDetails loadUserByUsername(String username);

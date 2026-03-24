@@ -5,6 +5,7 @@ import com.example.trazabilidad.dtos.EventoDto;
 import com.example.trazabilidad.entities.EventoTrazabilidad;
 import com.example.trazabilidad.entities.Lote;
 import com.example.trazabilidad.mappers.EventoMapper;
+import com.example.trazabilidad.repositories.EventoTrazabilidadRepository;
 import com.example.trazabilidad.repositories.LoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,22 +20,17 @@ public class EventoServiceImpl implements EventoService {
     private LoteRepository loteRepository;
 
     @Autowired
-    private EventoRepository eventoRepository;
+    private EventoTrazabilidadRepository eventoRepository;
 
     @Autowired
     private EventoMapper mapper;
-
-
 
     @Override
     public Optional<EventoDto> crearEvento(Long id, EventoCreateDto dto) {
         Optional<Lote> loteOptional = loteRepository.findById(id);
         if (loteOptional.isPresent()){
             Lote lote = loteOptional.get();
-            //Crear el evento con el mapper
             EventoTrazabilidad evento = mapper.eventoCreateDtoToEntity(dto);
-
-            //AsignarTimestamp
             evento.setTimestamp(LocalDateTime.now());
             evento.setLote(lote);
             return Optional.of(mapper.toDto(eventoRepository.save(evento)));
@@ -48,7 +44,6 @@ public class EventoServiceImpl implements EventoService {
         Optional<Lote> loteOptional = loteRepository.findById(id);
 
         if (loteOptional.isPresent()){
-            // Buscar eventos del lote + ordenadas
             List<EventoDto> eventos = eventoRepository
                     .findByLoteIdOrderByTimestampAsc(id)
                     .stream()

@@ -53,7 +53,7 @@ public class AuthService {
         );
 
         //Comprobar que el username no esté ya en BBDD
-        if (this.repository.findByUserName(user.getUsername()).isPresent()) {
+        if (this.repository.findByUsername(user.getUsername()).isPresent()) {
             log.error("El usuario ya existe");
             throw new RuntimeException("El usuario ya existe");
         }
@@ -71,7 +71,7 @@ public class AuthService {
      */
     public ResponseEntity<AuthDto> login(UserLoginDto user) {
         //1. Buscar el usuario en la BBDD
-        Optional<Object> userOptional = this.repository.findByUserName(user.userName());
+        Optional<Object> userOptional = this.repository.findByUsername(user.userName());
         if (userOptional.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }

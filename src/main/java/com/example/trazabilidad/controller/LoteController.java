@@ -1,24 +1,29 @@
 package com.example.trazabilidad.controller;
 
+import com.example.trazabilidad.dtos.LoteDto;
+import com.example.trazabilidad.services.LoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/lotes")
 public class LoteController {
+
     @Autowired
     private LoteService service;
 
     @GetMapping("/{id}")
     public ResponseEntity<LoteDto> getLote(@PathVariable Long id){
-        Optional<LoteDto> lote = service.findById(id);
-        return lote.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<LoteDto> late = service.findById(id);
+        return late.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PatchMapping("/{id}/estado")
-    public ResponseEntity<LoteDto> updateEstado(@PathVariable Long id , @RequestBody LoteEstadoUpdateDto dto){
-        return service.updateEstado(id , dto)
+    public ResponseEntity<Object> updateEstado(@PathVariable Long id ){
+        return service.updateEstado(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

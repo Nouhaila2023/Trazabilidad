@@ -2,6 +2,8 @@ package com.example.trazabilidad.controller;
 
 
 import com.example.trazabilidad.dtos.*;
+import com.example.trazabilidad.entities.Lote;
+import com.example.trazabilidad.services.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,8 +55,8 @@ public class ProductoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
     @GetMapping("/{id}/lotes")
-    public ResponseEntity<List<LoteDto>> getLotes(@PathVariable Long id) {
-        Optional<List<LoteDto>> lotes = productoService.listarLotes(id);
+    public ResponseEntity<List<Lote>> getLotes(@PathVariable Long id) {
+        Optional<List<Lote>> lotes = productoService.listarLotes(id);
         return lotes.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

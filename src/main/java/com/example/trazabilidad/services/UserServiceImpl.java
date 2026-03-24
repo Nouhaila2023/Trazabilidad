@@ -7,6 +7,7 @@ import com.example.trazabilidad.mappers.UserMapper;
 import com.example.trazabilidad.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -27,8 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> findAll() {
-        //return userRepository.findAll().stream().map(mapper::toDto).toList();
-        return  userRepository.findAll().stream().map(mapper::toDto).toList();
+        return userRepository.findAll().stream().map(mapper::toDto).toList();
     }
 
     @Override
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDto> findByUserName(String userName) {
-        return userRepository.findByUserName(userName).map(mapper::toDto);
+        return Optional.empty();
     }
 
     @Override
@@ -47,8 +48,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Object findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
     public UserDto saveUser(UserCreateDto user) {
         User userEntity = mapper.toEntity(user);
+
         return mapper.toDto(userRepository.save(userEntity));
     }
 
@@ -57,12 +64,12 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
-
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return this.userRepository.findByUserName(username).orElseThrow(
+    public UserDetails loadUserByUsername(String username) {
+        return (UserDetails) this.userRepository.findByUsername(username).orElseThrow(
                 () -> new UsernameNotFoundException(username + " no encontrado")
         );
     }
+
 
 }
